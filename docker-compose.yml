@@ -17,6 +17,7 @@ services:
       dockerfile: Dockerfile
     env_file:
       - './socket-app/.env'
+    # command: 'npm install'
     volumes:
         - "./socket-app:/usr/src/app"
     ports:
@@ -34,11 +35,11 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=pokemon_database
+      # - POSTGRES_DB=pokemon_database
     ports:
       - '5432:5432'
     volumes: 
-      - ./database:/docker-entrypoint-initdb.d/
+      - ./database/initial.sql:/docker-entrypoint-initdb.d/initial.sql
       - dbapp:/var/lib/postgresql/data
 
 networks:
