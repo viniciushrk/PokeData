@@ -1,4 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using PokeData.Api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlite("Data Source=Pokemons.db",
+    o => o.MigrationsAssembly("PokeData.Api")));
 
 // Add services to the container.
 
