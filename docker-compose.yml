@@ -13,13 +13,13 @@ services:
   socket:
     container_name: "socket-poke-data"
     build:
-      context: "socket-app"
+      context: "socket-app-socket"
       dockerfile: Dockerfile
     env_file:
-      - './socket-app/.env'
+      - './socket-app-socket/.env'
     # command: 'npm install'
     volumes:
-        - "./socket-app:/usr/src/app"
+        - "./socket-app-socket:/usr/src/app"
     ports:
       - 3000:3000
     links:
