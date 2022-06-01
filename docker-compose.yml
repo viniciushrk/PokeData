@@ -13,12 +13,12 @@ services:
   socket:
     container_name: "socket-poke-data"
     build:
-      context: "socket"
+      context: "socket-app"
       dockerfile: Dockerfile
     env_file:
-      - './socket/.env'
+      - './socket-app/.env'
     volumes:
-        - "./socket:/usr/src/app"
+        - "./socket-app:/usr/src/app"
     ports:
       - 3000:3000
     links:
