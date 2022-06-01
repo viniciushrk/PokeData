@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  cache: 
+    hostname: cache_app
+    container_name: "cache_app"
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - app
+
+  socket:
+    container_name: "socket-poke-data"
+    build:
+      context: "socket"
+      dockerfile: Dockerfile
+    env_file:
+      - './socket/.env'
+    volumes:
+        - "./socket:/usr/src/app"
+    ports:
+      - 3000:3000
+    links:
+      - "cache"
+    depends_on:
+      - cache
+    networks:
+      - app
+  
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=pokemon_database
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./database:/docker-entrypoint-initdb.d/
+      - dbapp:/var/lib/postgresql/data
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  dbapp:
+    driver: local
