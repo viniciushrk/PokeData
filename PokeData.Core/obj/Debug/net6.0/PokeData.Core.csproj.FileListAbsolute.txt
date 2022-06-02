@@ -1,0 +1,14 @@
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\bin\Debug\net6.0\PokeData.Core.deps.json
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\bin\Debug\net6.0\PokeData.Core.runtimeconfig.json
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\bin\Debug\net6.0\PokeData.Core.dll
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\bin\Debug\net6.0\PokeData.Core.pdb
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.csproj.AssemblyReference.cache
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.AssemblyInfoInputs.cache
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.AssemblyInfo.cs
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.csproj.CoreCompileInputs.cache
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.dll
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\refint\PokeData.Core.dll
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.pdb
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\PokeData.Core.genruntimeconfig.cache
+C:\Users\01467545228\source\repos\viniciushrk\PokeData\PokeData.Core\obj\Debug\net6.0\ref\PokeData.Core.dll

@@ -41,6 +41,22 @@ services:
     volumes: 
       - ./database/initial.sql:/docker-entrypoint-initdb.d/initial.sql
       - dbapp:/var/lib/postgresql/data
+  pokedata:
+    image: ${DOCKER_REGISTRY-}pokedata
+    build:
+      context: "PokeData"
+      dockerfile: Dockerfile
+    ports:
+      - 5000:80
+      - 5001:443 
+    links:
+      - "cache"
+      - "db"
+    depends_on:
+      - cache
+      - db
+    networks:
+      - app
 
 networks:
   app:

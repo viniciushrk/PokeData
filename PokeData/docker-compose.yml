@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  pokedata:
+    image: ${DOCKER_REGISTRY-}pokedata
+    build:
+      context: .
+      dockerfile: Dockerfile
