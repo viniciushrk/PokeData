@@ -1,8 +1,8 @@
-﻿namespace PokeData.Core
+﻿namespace PokeData.Core.Models
 {
     public class Pokemon
     {
-		public string Guid { get; set; }
+		public Guid Id { get; set; }
 		public string Nome { get; set; }
 		public string Type { get; set; }
 		public string Image { get; set; }
