@@ -8,7 +8,6 @@ COPY ["package.json", "package-lock.json*", "./"]
 
 COPY package*.json /usr/src/app/
 
-
 RUN npm install
 
 RUN npm install pm2@latest -g
