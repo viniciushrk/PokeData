@@ -44,9 +44,8 @@ namespace PokeData.Core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Stars")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Stars")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()

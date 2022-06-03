@@ -12,8 +12,8 @@ using PokeData.Core.Data;
 namespace PokeData.Core.Migrations
 {
     [DbContext(typeof(PokemonContext))]
-    [Migration("20220602030030_initial")]
-    partial class initial
+    [Migration("20220603022817_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,9 +46,8 @@ namespace PokeData.Core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Stars")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Stars")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -56,7 +55,7 @@ namespace PokeData.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Eventos");
+                    b.ToTable("Pokemon");
                 });
 #pragma warning restore 612, 618
         }

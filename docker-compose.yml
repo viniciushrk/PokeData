@@ -12,6 +12,7 @@ services:
 
   socket:
     container_name: "socket-poke-data"
+    # hostname: dbpokemon
     build:
       context: "socket-app-socket"
       dockerfile: Dockerfile
@@ -31,6 +32,7 @@ services:
   
   db:
     image: postgres:14.1-alpine
+    hostname: dbpokemon
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -41,26 +43,27 @@ services:
     volumes: 
       - ./database/initial.sql:/docker-entrypoint-initdb.d/initial.sql
       - dbapp:/var/lib/postgresql/data
-  pokedata:
-    image: ${DOCKER_REGISTRY-}pokedata
-    build:
-      context: "PokeData"
-      dockerfile: Dockerfile
-    ports:
-      - 5000:80
-      - 5001:443 
-    links:
-      - "cache"
-      - "db"
-    depends_on:
-      - cache
-      - db
-    networks:
-      - app
+  # pokedata:
+  #   image: ${DOCKER_REGISTRY-}pokedata
+  #   build:
+  #     context: "PokeData"
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 5000:80
+  #     - 5001:443 
+  #   links:
+  #     - "cache"
+  #     - "db"
+  #   depends_on:
+  #     - cache
+  #     - db
+  #   networks:
+  #     - app
 
 networks:
   app:
     driver: bridge
+    external: true
 
 volumes:
   dbapp:

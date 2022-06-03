@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    
+        {
+            "type": "vslsRemoteLaunch",
+            "name": "PokeData",
+            "request": "attach",
+            "projectID": "d3a69d8a-90c3-4c45-b787-59f687e88c7a"
+        },
+        {
+            "type": "vslsRemoteLaunch",
+            "name": "docker-compose",
+            "request": "attach",
+            "projectID": "eaf1e8bf-5a77-43b9-96b4-deead1905169"
+        },
+        {
+            "type": "vslsRemoteLaunch",
+            "name": "PokeData.Core",
+            "request": "attach",
+            "projectID": "b4dd8ad5-a7b4-4941-bb6e-d8f16efdefec"
+        }
+    ]
+}

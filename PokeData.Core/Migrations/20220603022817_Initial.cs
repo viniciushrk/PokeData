@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PokeData.Core.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Eventos",
+                name: "Pokemon",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -19,18 +19,18 @@ namespace PokeData.Core.Migrations
                     Image = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Generation = table.Column<string>(type: "text", nullable: false),
-                    Stars = table.Column<string>(type: "text", nullable: false)
+                    Stars = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Eventos", x => x.Id);
+                    table.PrimaryKey("PK_Pokemon", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Eventos");
+                name: "Pokemon");
         }
     }
 }

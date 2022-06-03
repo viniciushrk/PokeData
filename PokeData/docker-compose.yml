@@ -6,6 +6,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      #  - SQLCONNSTR_PokemonDB=Username=postgres;Password=postgres;Host=192.168.42.212;Port=5432;Database=pokemon_database;
+       - SQLCONNSTR_PokemonDB=Username=postgres;Password=postgres;Host=dbpokemon;Port=5432;Database=pokemon_database;
     ports:
       - 5002:80
       - 5003:443
+    networks:
+      - app
+
+
+networks:
+  app:
+    driver: bridge
+    # external: true
