@@ -3,11 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString =
-    "User ID=postgres;Password=postgres;Host=localhost;Port:5432;Database=pokemon_database;";
+//var connectionString =
+//    "User ID=postgres;Password=postgres;Host=localhost;Port:5432;Database=pokemon_database;";
+
     
 builder.Services.AddDbContext<PokemonContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PokemonDB")/*,o => o.MigrationsAssembly("PokeData.Core")*/
+    options.UseSqlite("Data Source=Pokemon.db",
+    o => o.MigrationsAssembly("PokeData.Core")
+    //options.UseNpgsql(builder.Configuration.GetConnectionString("PokemonDB")/*,o => o.MigrationsAssembly("PokeData.Core")*/
     ));
 // Add services to the container.
 

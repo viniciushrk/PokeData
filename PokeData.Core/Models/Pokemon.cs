@@ -10,8 +10,13 @@
 		public string Generation { get; set; }
 		public int Stars { get; set; }
 
-		public void UpdateStars(){
+		public void IncrementStars(){
 			Stars += 1;
+		}
+
+		public void DecrementStars()
+		{
+			Stars -= 1;
 		}
 	}
 }

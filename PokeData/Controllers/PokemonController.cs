@@ -22,7 +22,7 @@ namespace PokeData.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
             var pokemon = _pokemonContext.Pokemon.Find(id);
             if (pokemon == null)
@@ -45,27 +45,41 @@ namespace PokeData.Controllers
 
         [HttpPut("{id}")]
         public IActionResult Put(Guid id, [FromBody] Pokemon pokemon)
-        {
-            var pokemonSearch = _pokemonContext.Pokemon.Find(id);
-            
-            if (pokemonSearch == null)
+        {   
+            if (id != pokemon.Id)
                 return BadRequest();
-
+            
             _pokemonContext.Pokemon.Update(pokemon);
             _pokemonContext.SaveChanges();
 
             return NoContent();
         }
 
-        [HttpPost("UpdateStars/{id}")]
-        public IActionResult UpdateStars(Guid id)
+        [HttpPost("IncrementStars/{id}")]
+        public IActionResult IncrementStars(Guid id)
         {
             var pokemonSearch = _pokemonContext.Pokemon.Find(id);
             
             if (pokemonSearch == null)
                 return BadRequest();
 
-            pokemonSearch.UpdateStars();
+            pokemonSearch.IncrementStars();
+
+            _pokemonContext.Pokemon.Update(pokemonSearch);
+            _pokemonContext.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpPost("DecrementStars/{id}")]
+        public IActionResult DecrementStars(Guid id)
+        {
+            var pokemonSearch = _pokemonContext.Pokemon.Find(id);
+
+            if (pokemonSearch == null)
+                return BadRequest();
+
+            pokemonSearch.DecrementStars();
 
             _pokemonContext.Pokemon.Update(pokemonSearch);
             _pokemonContext.SaveChanges();
@@ -75,7 +89,7 @@ namespace PokeData.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             var evento = _pokemonContext.Pokemon.Find(id);
             if (evento == null)
