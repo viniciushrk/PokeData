@@ -49,7 +49,7 @@ namespace PokeData.Controllers
             _pokemonContext.Pokemon.Add(pokemonModel);
             _pokemonContext.SaveChanges();
 
-            return Created($"eventos/{pokemonModel.Id}", pokemon);
+            return Created($"pokemon/{pokemonModel.Id}", pokemon);
         }
 
 

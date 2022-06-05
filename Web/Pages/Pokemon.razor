@@ -1,0 +1,50 @@
+﻿@page "/pokemon"
+@page "/pokemon/{id:Guid}"
+@inject HttpClient Http
+@using Domain.Models
+@*@inject IPokemonService pokemonService *@
+
+
+<PageTitle>Adicionar Pokémon</PageTitle>
+
+<h1>Criar Pokémon</h1>
+
+
+<EditForm Model="pokemon" OnSubmit="HandleSubmit">
+    <div>
+        <label for="name">Nome do Pokémon</label>
+        <InputText id="nome" @bind-Value="pokemon?.Nome" class="form-control"></InputText>
+    </div>
+    <div>
+        <label for="type">Tipo do Pokémon</label>
+        <InputText id="type" @bind-Value="pokemon?.Type" class="form-control"></InputText>
+    </div>
+    <div>
+        <label for="image">Url da Imagem do Pokémon</label>
+        <InputText id="image" @bind-Value="pokemon?.Image" class="form-control"></InputText>
+    </div>
+    <div>
+        <label for="generation">Geração do Pokémon</label>
+        <InputText id="generation" @bind-Value="pokemon?.Generation" class="form-control"></InputText>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Criar Pokemon</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    public Pokemon pokemon;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        pokemon = await Http.GetFromJsonAsync<Pokemon>($"/api/Pokemon/{Id}");
+    }
+
+    async Task HandleSubmit()
+    {
+        //await PokemonService.CreatePokemon(pokemon);
+
+    }
+}
