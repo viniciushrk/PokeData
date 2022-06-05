@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PokeData.Core.Data;
-using PokeData.Core.Models;
+using Domain.Data;
+using Domain.Models;
+using Domain.Dto;
 using System.Linq;
 
 namespace PokeData.Controllers
@@ -18,7 +19,7 @@ namespace PokeData.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_pokemonContext.Pokemon);
+            return Ok(_pokemonContext.Pokemon.ToList());
         }
 
         [HttpGet("{id}")]
@@ -32,14 +33,23 @@ namespace PokeData.Controllers
 
 
         [HttpPost]
-        public IActionResult Post([FromBody] Pokemon pokemon)
+        public IActionResult Post([FromBody] CriarPokemonDto pokemon)
         {
             if (pokemon == null)
                 return BadRequest();
-            _pokemonContext.Pokemon.Add(pokemon);
+
+            Pokemon pokemonModel = new Pokemon() { 
+                Description = pokemon.Description,
+                Image = pokemon.Image,
+                Type = pokemon.Type,
+                Generation = pokemon.Generation,
+                Nome = pokemon.Nome,
+            };
+
+            _pokemonContext.Pokemon.Add(pokemonModel);
             _pokemonContext.SaveChanges();
 
-            return Created($"eventos/{pokemon.Id}", pokemon);
+            return Created($"eventos/{pokemonModel.Id}", pokemon);
         }
 
 

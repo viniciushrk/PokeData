@@ -1,6 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\PokeData"
   ],
+  "SelectedNode": "\\PokeData\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

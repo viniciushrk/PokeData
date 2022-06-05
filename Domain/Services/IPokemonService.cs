@@ -1,0 +1,20 @@
+﻿using Domain.Models;
+using Refit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Services
+{
+    public interface IPokemonService
+    {
+        [Get("/api/pokemon")]
+        List<Pokemon> GetPokemon();
+
+
+        [Post("/api/pokemon")]
+        Task<Pokemon> PostPokemon();
+    }
+}

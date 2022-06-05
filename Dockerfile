@@ -6,12 +6,11 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-
 WORKDIR /src
-COPY ["PokeData.csproj", "."]
+COPY ["./PokeData/PokeData.csproj", "."]
 RUN dotnet restore "PokeData.csproj"
-COPY . .
-# COPY ["../Domain", "."]
+COPY ./PokeData/ .
+COPY ./Domain/ .
 
 WORKDIR "/src/"
 RUN dotnet build "PokeData.csproj" -c Release -o /app/build

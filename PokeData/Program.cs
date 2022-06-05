@@ -1,16 +1,16 @@
-using PokeData.Core.Data;
+using Domain.Data;
+using Refit;
+using Domain.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //var connectionString =
 //    "User ID=postgres;Password=postgres;Host=localhost;Port:5432;Database=pokemon_database;";
-
     
 builder.Services.AddDbContext<PokemonContext>(options =>
-    options.UseSqlite("Data Source=Pokemon.db",
-    o => o.MigrationsAssembly("PokeData.Core")
-    //options.UseNpgsql(builder.Configuration.GetConnectionString("PokemonDB")/*,o => o.MigrationsAssembly("PokeData.Core")*/
+    //options.UseSqlite("Data Source=Pokemon.db",o => o.MigrationsAssembly("PokeData.Core")
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PokemonDB"),o => o.MigrationsAssembly("Domain")
     ));
 // Add services to the container.
 
@@ -21,9 +21,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 app.UseCors(
     x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
     );
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -31,10 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
-
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
