@@ -3,6 +3,9 @@ using Domain.Data;
 using Domain.Models;
 using Domain.Dto;
 using System.Linq;
+using StackExchange.Redis;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace PokeData.Controllers
 {
@@ -55,7 +58,23 @@ namespace PokeData.Controllers
 
         [HttpPut("{id}")]
         public IActionResult Put(Guid id, [FromBody] Pokemon pokemon)
-        {   
+        {
+            using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
+            {
+                ISubscriber sub = redis.GetSubscriber();
+                var teste = new MessageSocket()
+                {
+                    Event = "pokemon",
+                    Room = "pokemon_post",
+                    Data = new { message = $"Pokemon {pokemon.Nome} atualizado." }
+                };
+
+                var serializerSettings = new JsonSerializerSettings();
+                
+                serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                sub.Publish("pokemon", JsonConvert.SerializeObject(teste, serializerSettings));
+            }
+
             if (id != pokemon.Id)
                 return BadRequest();
             

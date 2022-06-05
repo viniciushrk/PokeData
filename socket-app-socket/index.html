@@ -38,23 +38,23 @@
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
-          console.log( socket.emit('deal_talk', input.value));
+          console.log(socket.emit('pokemon', input.value));
           input.value = '';
         }
       });
 
       socket.on("connection", (socket) => {
-        socket.join("deal_talk");
-        console.log(socket.rooms)
+        socket.join("pokemon");
+        console.log("room ", socket.rooms)
       })
 
-      socket.on('deal_talk', function(msg) {
+      socket.on('pokemon', function(data) {
         
-        console.log(msg);
-        // var item = document.createElement('li');
-        // item.textContent = msg.data != undefined ? msg.data.message : msg;
-        // messages.appendChild(item);
-        // window.scrollTo(0, document.body.scrollHeight);
+        console.log("msg ", data);
+        var item = document.createElement('li');
+        item.textContent = data.message != undefined ? data.message : data;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
       });
     </script>
   </body>
