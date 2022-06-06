@@ -2,11 +2,8 @@
 using Domain.Data;
 using Domain.Models;
 using Domain.Dto;
-using System.Linq;
-using StackExchange.Redis;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Infra.Services;
+using Domain.Repository;
 
 namespace PokeData.Controllers
 {
@@ -17,15 +14,18 @@ namespace PokeData.Controllers
         private readonly PokemonContext _pokemonContext;
         private readonly SocketService _socketService;
         private readonly CacheService _cacheService;
+        private readonly BuscarListaPokemonRepository _buscarListaPokemonRepository;
         public PokemonController(
             PokemonContext pokemonContext,
             SocketService socketService,
-            CacheService cacheService
+            CacheService cacheService,
+            BuscarListaPokemonRepository buscarListaPokemonRepository
         )
         {
             _pokemonContext = pokemonContext;
             _socketService = socketService;
             _cacheService = cacheService;
+            _buscarListaPokemonRepository = buscarListaPokemonRepository;
         }
 
         [HttpGet]
@@ -36,7 +36,7 @@ namespace PokeData.Controllers
             if(pokemons != null)
                 return Ok(pokemons);    
 
-            var pokemonDb = _pokemonContext.Pokemon.ToList();
+            var pokemonDb = _buscarListaPokemonRepository.Executar();
 
             await _cacheService.EmitirCachePokemon();
             return Ok(pokemonDb);
@@ -54,24 +54,17 @@ namespace PokeData.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] CriarPokemonDto pokemon)
-        {
+        public async Task<IActionResult> PostAsync(
+            [FromBody] CriarPokemonDto pokemon,
+            [FromServices] CadastrarPokemonRepository cadastrarPokemonRepository
+        ) {
             if (pokemon == null)
                 return BadRequest();
 
-            Pokemon pokemonModel = new Pokemon() { 
-                Description = pokemon.Description,
-                Image = pokemon.Image,
-                Type = pokemon.Type,
-                Generation = pokemon.Generation,
-                Nome = pokemon.Nome,
-            };
-
-            _pokemonContext.Pokemon.Add(pokemonModel);
-            _pokemonContext.SaveChanges();
+            var pokemonCriado = cadastrarPokemonRepository.Executar(pokemon); 
 
             await _cacheService.EmitirCachePokemon();
-            return Created($"eventos/{pokemonModel.Id}", pokemon);
+            return Created($"eventos/{pokemonCriado.Id}", pokemon);
         }
 
 

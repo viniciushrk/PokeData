@@ -1,13 +1,7 @@
-﻿using Domain.Dto;
-using Domain.Models;
+﻿using Domain.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Domain.Data;
 
 namespace Infra.Services
@@ -47,8 +41,6 @@ namespace Infra.Services
             string cacheKey = $"lista_pokemon";
 
             byte[] cachedData = await _cache.GetAsync(cacheKey);
-
-            _cache.Remove(cacheKey);
             
             if (cachedData != null)
             {

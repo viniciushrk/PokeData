@@ -23,31 +23,54 @@ services:
     networks:
       - app
 
-  # socket:
-  #   container_name: "socket-poke-data"
-  #   # hostname: dbpokemon
-  #   build:
-  #     context: "socket-app-socket"
-  #     dockerfile: Dockerfile
-  #   env_file:
-  #     - './socket-app-socket/.env'
-  #   # command: 'npm install'
-  #   volumes:
-  #       - "./socket-app-socket:/usr/src/app"
-  #   ports:
-  #     - 3000:3000
-  #   links:
-  #     - "cache"
-  #   depends_on:
-  #     - cache
-  #   networks:
-  #     - app
+  socket:
+    container_name: "socket-poke-data"
+    # hostname: dbpokemon
+    build:
+      context: "socket-app-socket"
+      dockerfile: Dockerfile
+    env_file:
+      - './socket-app-socket/.env'
+    # command: 'npm install'
+    volumes:
+        - "./socket-app-socket:/usr/src/app"
+    ports:
+      - 3000:3000
+    links:
+      - "cache"
+    depends_on:
+      - cache
+    networks:
+      - app
 
   # pokedata:
   #   image: ${DOCKER_REGISTRY-}pokedata
   #   build:
   #     context: "."
   #     dockerfile: Dockerfile
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=https://+:443;http://+:80
+  #   ports:
+  #     - 5002:80
+  #     - 5003:443 
+  #   links:
+  #     - "cache"
+  #     - "db"
+  #   depends_on:
+  #     - cache
+  #     - db
+  #   networks:
+  #     - app
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  # web:
+  #   image: ${DOCKER_REGISTRY-}Web
+  #   build:
+  #     context: "."
+  #     dockerfile: DockerfileWeb
   #   environment:
   #     - ASPNETCORE_ENVIRONMENT=Development
   #     - ASPNETCORE_URLS=https://+:443;http://+:80
@@ -64,13 +87,11 @@ services:
   #     - app
   #   volumes:
   #     - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-  #     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-    
+  #     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro  
 
 networks:
   app:
     driver: bridge
-    # external: true
 
 volumes:
   dbapp:
