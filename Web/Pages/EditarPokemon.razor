@@ -1,14 +1,13 @@
-﻿@page "/pokemon"
-@*@page "/pokemon/{id:Guid}"*@
+﻿@page "/pokemon/{id}"
 @inject ICriarPokemonService criarPokemon;
 @using Domain.Dto
 @using System.Text;
 @using Domain.Services
 @inject HttpClient Http;
 
-<PageTitle>Adicionar Pokémon</PageTitle>
+<PageTitle>Editar Pokémon</PageTitle>
 
-<h1>Criar Pokémon</h1>
+<h1>Editar Pokémon</h1>
 
 
 <EditForm Model="@pokemon" OnValidSubmit="@CriarPokemon">

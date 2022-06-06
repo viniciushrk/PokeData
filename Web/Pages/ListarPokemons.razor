@@ -1,0 +1,75 @@
+﻿@page "/listapokemons"
+@using Domain.Dto
+@using System.Text;
+@using Domain.Services
+@inject HttpClient Http;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage;
+
+<PageTitle>PokeData</PageTitle>
+
+<h1>Pokemons</h1>
+
+@if (listaPokemon == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="d-flex flex-wrap">
+        @foreach (var item in listaPokemon)
+        {
+            <div class="col-md-4 p-2">
+                <div class="card">
+                    <img class="card-img-top" src="@item.Image" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Nome</h5>
+                        <p class="card-text">@item.Description</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">@item.Type</li>
+                        <li class="list-group-item">@item.Generation</li>
+                    </ul>
+                    <div class="card-body">
+                        <button class="btn btn-primary" @onclick="(() => ChangeStar(item.Id))">Stars <span class="badge badge-dark">@item.Stars</span> </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    Pokemon pokemon = new();
+    private List<Pokemon> listaPokemon;
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaPokemon = await Http.GetFromJsonAsync<List<Pokemon>>("pokemon");
+    }
+
+    public async Task ChangeStar(Guid id)
+    {
+        var status = await GetStatusStarsPokemon(id);
+        if (! status)
+        {
+            var contentString = new StringContent("", Encoding.UTF8, "application/json");
+            await Http.PostAsJsonAsync($"pokemon/IncrementStars/{id}", contentString);
+            var result = listaPokemon.Where(x => x.Id == id).First();
+            result.Stars += 1;
+            await localStorage.SetItemAsync(id.ToString(), true);
+        }
+        else
+        {
+            var contentString = new StringContent("", Encoding.UTF8, "application/json");
+            await Http.PostAsJsonAsync($"pokemon/DecrementStars/{id}", contentString);
+            var result = listaPokemon.Where(x => x.Id == id).First();
+            result.Stars -= 1;
+            await localStorage.SetItemAsync(id.ToString(), false);
+        }
+    }
+
+    public async Task<bool> GetStatusStarsPokemon(Guid id)
+    {
+        return await localStorage.GetItemAsync<bool>(id.ToString());
+    }
+}

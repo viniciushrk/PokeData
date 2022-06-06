@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Web;
 using Domain.Services;
 using Domain.Helper;
+using Blazored.LocalStorage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+builder.Services.AddBlazoredLocalStorage();
 
 //builder.Services.AddRefitClient<IPokemonService>().ConfigureHttpClient(h => {
 //    h.BaseAddress = new Uri("https://localhost:5003");
