@@ -6,6 +6,7 @@ using System.Linq;
 using StackExchange.Redis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Infra.Services;
 
 namespace PokeData.Controllers
 {
@@ -14,21 +15,38 @@ namespace PokeData.Controllers
     public class PokemonController : ControllerBase
     {
         private readonly PokemonContext _pokemonContext;
-        public PokemonController(PokemonContext pokemonContext)
+        private readonly SocketService _socketService;
+        private readonly CacheService _cacheService;
+        public PokemonController(
+            PokemonContext pokemonContext,
+            SocketService socketService,
+            CacheService cacheService
+        )
         {
             _pokemonContext = pokemonContext;
+            _socketService = socketService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> GetAsync()
         {
-            return Ok(_pokemonContext.Pokemon.ToList());
+            var pokemons = await _cacheService.GetCacheListaPokemon();
+
+            if(pokemons != null)
+                return Ok(pokemons);    
+
+            var pokemonDb = _pokemonContext.Pokemon.ToList();
+
+            await _cacheService.EmitirCachePokemon();
+            return Ok(pokemonDb);
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
             var pokemon = _pokemonContext.Pokemon.Find(id);
+            
             if (pokemon == null)
                 return NotFound();
             return Ok(pokemon);
@@ -36,7 +54,7 @@ namespace PokeData.Controllers
 
 
         [HttpPost]
-        public IActionResult Post([FromBody] CriarPokemonDto pokemon)
+        public async Task<IActionResult> PostAsync([FromBody] CriarPokemonDto pokemon)
         {
             if (pokemon == null)
                 return BadRequest();
@@ -52,41 +70,28 @@ namespace PokeData.Controllers
             _pokemonContext.Pokemon.Add(pokemonModel);
             _pokemonContext.SaveChanges();
 
+            await _cacheService.EmitirCachePokemon();
             return Created($"eventos/{pokemonModel.Id}", pokemon);
         }
 
 
         [HttpPut("{id}")]
-        public IActionResult Put(Guid id, [FromBody] Pokemon pokemon)
+        public async Task<IActionResult> PutAsync(Guid id, [FromBody] Pokemon pokemon)
         {
-            using (ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
-            {
-                ISubscriber sub = redis.GetSubscriber();
-                var teste = new MessageSocket()
-                {
-                    Event = "pokemon",
-                    Room = "pokemon_post",
-                    Data = new { message = $"Pokemon {pokemon.Nome} atualizado." }
-                };
-
-                var serializerSettings = new JsonSerializerSettings();
-                
-                serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                sub.Publish("pokemon", JsonConvert.SerializeObject(teste, serializerSettings));
-            }
-
             if (id != pokemon.Id)
                 return BadRequest();
             
             _pokemonContext.Pokemon.Update(pokemon);
             _pokemonContext.SaveChanges();
 
+            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
 
         [HttpPost("IncrementStars/{id}")]
-        public IActionResult IncrementStars(Guid id)
-        {
+        public IActionResult IncrementStars(
+            Guid id
+        ) {
             var pokemonSearch = _pokemonContext.Pokemon.Find(id);
             
             if (pokemonSearch == null)
@@ -97,6 +102,8 @@ namespace PokeData.Controllers
             _pokemonContext.Pokemon.Update(pokemonSearch);
             _pokemonContext.SaveChanges();
 
+            _socketService.EmitirEventoStarsIncrement(pokemon: pokemonSearch);
+            
             return NoContent();
         }
 
@@ -107,11 +114,15 @@ namespace PokeData.Controllers
 
             if (pokemonSearch == null)
                 return BadRequest();
+            
+            if(pokemonSearch.Stars != 0)
+            {
+                pokemonSearch.DecrementStars();
+                _pokemonContext.Pokemon.Update(pokemonSearch);
+                _pokemonContext.SaveChanges();
 
-            pokemonSearch.DecrementStars();
-
-            _pokemonContext.Pokemon.Update(pokemonSearch);
-            _pokemonContext.SaveChanges();
+                _socketService.EmitirEventoStarsDecrement(pokemon: pokemonSearch);
+            }
 
             return NoContent();
         }
