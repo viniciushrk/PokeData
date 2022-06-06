@@ -1,4 +1,4 @@
-﻿@page "/pokemon/{id}"
+﻿@page "/editarpokemon/{id}"
 @inject ICriarPokemonService criarPokemon;
 @using Domain.Dto
 @using System.Text;
@@ -10,7 +10,7 @@
 <h1>Editar Pokémon</h1>
 
 
-<EditForm Model="@pokemon" OnValidSubmit="@CriarPokemon">
+<EditForm Model="@pokemon" OnValidSubmit="@UpdatePokemon">
     <div>
         <label for="name">Nome do Pokémon</label>
         <InputText id="nome" @bind-Value="pokemon.Nome" class="form-control"></InputText>
@@ -36,26 +36,34 @@
         <p>@message</p>
     </div>
     <br />
-    <button type="submit" class="btn btn-primary">Criar Pokemon</button>
+    <button type="submit" class="btn btn-primary">Editar Pokemon</button>
 </EditForm >
 
 @code {
     [Parameter]
-    public Guid? Id { get; set; }
+    public string Id { get; set; }
 
-    protected CriarPokemonDto? pokemon = new ();
+    Pokemon pokemon = new();
+    //protected CriarPokemonDto? pokemon = new ();
     protected string message;
 
-    protected async Task CriarPokemon()
+    protected override async Task OnParametersSetAsync()
+    {
+        var pokemonId = Guid.Parse(Id);
+        pokemon = await Http.GetFromJsonAsync<Pokemon>($"pokemon/{pokemonId}");
+    }
+
+    protected async Task UpdatePokemon()
     {
         try {
 
-            var result = await Http.PostAsJsonAsync("pokemon", pokemon);
+            var pokemonId = Guid.Parse(Id);
+            var result = await Http.PutAsJsonAsync($"pokemon/{pokemonId}", pokemon);
             var pokemonResult = result.Content.ReadFromJsonAsync<Pokemon>();
 
             if(pokemonResult != null)
             {
-                message = "Cadastrado com sucesso";        
+                message = "Atualizado com sucesso";        
             }
 
             

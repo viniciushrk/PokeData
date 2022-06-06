@@ -31,8 +31,12 @@
     <script>
         var socket = io("http://localhost:3000");
 
-        socket.on('pokemon', function (data) {
-            console.log("msg ", data);
+        socket.on('pokemon', function (data) {  
+            console.log("msg ", data.data);
+            let star = document.querySelector(`#star_${data.data.id}`);
+            if(star != undefined){
+                star.innerHTML = data.data.stars;
+            }
         });
     </script>
 </body>
