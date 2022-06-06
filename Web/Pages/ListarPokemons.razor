@@ -30,7 +30,11 @@ else
                         <li class="list-group-item">@item.Generation</li>
                     </ul>
                     <div class="card-body">
-                        <button class="btn btn-primary" @onclick="(() => ChangeStar(item.Id))">Stars <span class="badge badge-dark">@item.Stars</span> </button>
+                        <button class="btn btn-primary" @onclick="(() => ChangeStar(item.Id))"> Stars <span class="badge badge-dark">@item.Stars</span> </button>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/editarpokemon/@item.Id.ToString()" class="btn btn-primary"> <i class="bi bi-pencil-square"></i> Editar </a>
+                        <button class="btn btn-danger" @onclick="(() => DeletePokemon(item.Id))"> <i class="bi bi-pencil-square"></i> Excluir </button>
                     </div>
                 </div>
             </div>
@@ -66,6 +70,14 @@ else
             result.Stars -= 1;
             await localStorage.SetItemAsync(id.ToString(), false);
         }
+    }
+
+    async Task DeletePokemon(Guid id)
+    {
+        await Http.DeleteAsync($"pokemon/{id}"); 
+        var result = listaPokemon.Where(x => x.Id == id).First();
+        if (result != null)
+            listaPokemon.Remove(result);
     }
 
     public async Task<bool> GetStatusStarsPokemon(Guid id)
