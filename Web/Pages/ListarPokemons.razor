@@ -7,7 +7,9 @@
 
 <PageTitle>PokeData</PageTitle>
 
-<h1>Pokemons</h1>
+<h1 class="mt-5">Pokemons</h1>
+
+<p>Essa página vai ajudar a monitorar os Pokémons capturados ao redor do mundo.</p>
 
 @if (listaPokemon == null)
 {
@@ -29,12 +31,12 @@ else
                         <li class="list-group-item">@item.Type</li>
                         <li class="list-group-item">@item.Generation</li>
                     </ul>
-                    <div class="card-body">
-                        <button class="btn btn-primary" @onclick="(() => ChangeStar(item.Id))"> Stars <span class="badge badge-dark" id="star_@item.Id">@item.Stars</span> </button>
+                    <div class="card-body text-center">
+                        <button class="btn btn-star" @onclick="(() => ChangeStar(item.Id))"><i class="@starIcon"></i> Stars <span class="badge star-counter" id="star_@item.Id">@item.Stars</span> </button>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer text-center">
                         <a href="/editarpokemon/@item.Id.ToString()" class="btn btn-primary"> <i class="bi bi-pencil-square"></i> Editar </a>
-                        <button class="btn btn-danger" @onclick="(() => DeletePokemon(item.Id))"> <i class="bi bi-pencil-square"></i> Excluir </button>
+                        <button class="btn btn-danger" @onclick="(() => DeletePokemon(item.Id))"> <i class="bi bi-trash-fill"></i> Excluir </button>
                     </div>
                 </div>
             </div>
@@ -46,6 +48,8 @@ else
     Pokemon pokemon = new();
     private List<Pokemon> listaPokemon;
 
+    string starIcon = "bi bi-star";
+
     protected override async Task OnInitializedAsync()
     {
         listaPokemon = await Http.GetFromJsonAsync<List<Pokemon>>("pokemon");
@@ -56,11 +60,13 @@ else
         var status = await GetStatusStarsPokemon(id);
         if (! status)
         {
+          
             var contentString = new StringContent("", Encoding.UTF8, "application/json");
             await Http.PostAsJsonAsync($"pokemon/IncrementStars/{id}", contentString);
             var result = listaPokemon.Where(x => x.Id == id).First();
             result.Stars += 1;
             await localStorage.SetItemAsync(id.ToString(), true);
+            starIcon = "bi bi-star-fill";
         }
         else
         {
@@ -69,6 +75,7 @@ else
             var result = listaPokemon.Where(x => x.Id == id).First();
             result.Stars -= 1;
             await localStorage.SetItemAsync(id.ToString(), false);
+            starIcon = "bi bi-star";
         }
     }
 
