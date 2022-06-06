@@ -2,6 +2,7 @@ using Domain.Data;
 using Refit;
 using Domain.Services;
 using Microsoft.EntityFrameworkCore;
+using Domain.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ builder.Services.AddDbContext<PokemonContext>(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+// TO-DO remover essa merda
+builder.Services.AddScoped<HttpHelperServico>();
+builder.Services.AddScoped<ICriarPokemonService, CriarPokemonService>();
+//builder.Services.AddSingleton<IHttpHelperServico,HttpHelperServico>();
+//builder.Services.AddSingleton<ICriarPokemonService, CriarPokemonService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
