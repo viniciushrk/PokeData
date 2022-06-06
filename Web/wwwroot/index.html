@@ -24,6 +24,21 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+    <script type="module">
+        import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
+    </script>
+    <script>
+        var socket = io("http://localhost:3000");
+
+        socket.on('pokemon', function (data) {  
+            console.log("msg ", data.data);
+            let star = document.querySelector(`#star_${data.data.id}`);
+            if(star != undefined){
+                star.innerHTML = data.data.stars;
+            }
+        });
+    </script>
 </body>
 
 </html>

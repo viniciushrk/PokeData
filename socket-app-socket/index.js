@@ -1,34 +1,14 @@
-// const app = require('express')();
-// const http = require('http').Server(app);
-// const io = require('socket.io')(http);
-// const port = process.env.PORT || 3000;
-
-// app.get('/', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// });
-
-// io.on('connection', (socket) => {
-//   socket.on('chat message', msg => {
-//     io.emit('chat message', msg);
-//     console.log('chat message', msg)
-//   });
-// });
-
-// http.listen(port, () => {
-//   console.log(`Socket.IO server running at http://localhost:${port}/`);
-// });
-
-// const app = require('express')();
-// const http = require('http').Server(app);
-// const io = require('socket.io')(http);
-// const port = process.env.PORT || 3000;
-// require('dotenv').config();
 const { callbackify } = require('util');
 const https = require('http');
 const server = require('http').Server();
 const app = require('express')();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http,{
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 const Redis = require('ioredis');
 const redis = new Redis({host:'cache_app', port:6379});
 
@@ -40,15 +20,15 @@ const httpClient = axios.create({
         rejectUnauthorized: false
     })
 });
-
-redis.subscribe('deal_talk');
+// io.set('origins','*:*');
+redis.subscribe('pokemon');
 
 function processApiMessages(channel, message) {
     const data = JSON.parse(message);
 
     if ('room' in data) {
         logEventOnConsole(data);
-        // io.emit('deal_talk', data);
+        io.emit('pokemon', data);
         
         io.to(data.room).emit(data.event, data.data);
     }
@@ -66,14 +46,14 @@ function handleEvents(socket) {
 function processMessage(socket, message) {
     logEventOnConsole(message);
     
-    socket.on('deal_talk', (message) => {
-      io.emit('deal_talk',  message.data)
+    socket.on('pokemon', (message) => {
+      io.emit('pokemon_post',  message.data)
     });
 
     io.on('connection', (socket) => {
-      socket.on('deal_talk', msg => {
-        io.emit('deal_talk', msg);
-        console.log('deal_talk', msg)
+      socket.on('pokemon', msg => {
+        io.emit('pokemon_post', msg);
+        console.log('pokemon_post', msg)
       });
     });
     socket.broadcast.to(message.room).emit(message.event, message.data);
@@ -87,9 +67,9 @@ function logEventOnConsole(message) {
 }
 
 io.on('connection', (socket) => {
-  socket.on('deal_talk', msg => {
-    io.emit('deal_talk', msg);
-    console.log('deal_talk', msg)
+  socket.on('pokemon', msg => {
+    io.emit('pokemon_post', msg);
+    console.log('pokemon_post', msg)
   });
 });
 

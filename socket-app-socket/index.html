@@ -18,7 +18,7 @@
   <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
+      <!-- <input id="input" autocomplete="off" /><button>Send</button> -->
     </form>
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
@@ -38,23 +38,23 @@
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
-          console.log( socket.emit('deal_talk', input.value));
+          console.log(socket.emit('pokemon', input.value));
           input.value = '';
         }
       });
 
       socket.on("connection", (socket) => {
-        socket.join("deal_talk");
-        console.log(socket.rooms)
+        socket.join("pokemon");
+        console.log("room ", socket.rooms)
       })
 
-      socket.on('deal_talk', function(msg) {
+      socket.on('pokemon', function(data) {
         
-        console.log(msg);
-        // var item = document.createElement('li');
-        // item.textContent = msg.data != undefined ? msg.data.message : msg;
-        // messages.appendChild(item);
-        // window.scrollTo(0, document.body.scrollHeight);
+        console.log("msg ", data);
+        var item = document.createElement('li');
+        item.textContent = data.data.message != undefined ? data.data.message : data;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
       });
     </script>
   </body>
