@@ -3,6 +3,7 @@ using Refit;
 using Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Infra.Services;
+using Domain.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,11 @@ builder.Services.AddStackExchangeRedisCache(
 builder.Services.AddScoped<SocketService>();
 builder.Services.AddScoped<CacheService>();
 builder.Services.AddControllers();
+// TO-DO remover essa merda
+builder.Services.AddScoped<HttpHelperServico>();
+builder.Services.AddScoped<ICriarPokemonService, CriarPokemonService>();
+//builder.Services.AddSingleton<IHttpHelperServico,HttpHelperServico>();
+//builder.Services.AddSingleton<ICriarPokemonService, CriarPokemonService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

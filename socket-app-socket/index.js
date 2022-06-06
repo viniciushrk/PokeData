@@ -3,7 +3,12 @@ const https = require('http');
 const server = require('http').Server();
 const app = require('express')();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http,{
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 const Redis = require('ioredis');
 const redis = new Redis({host:'cache_app', port:6379});
 
@@ -15,7 +20,7 @@ const httpClient = axios.create({
         rejectUnauthorized: false
     })
 });
-
+// io.set('origins','*:*');
 redis.subscribe('pokemon');
 
 function processApiMessages(channel, message) {

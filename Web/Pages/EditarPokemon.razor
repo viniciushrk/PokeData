@@ -1,0 +1,67 @@
+﻿@page "/pokemon/{id}"
+@inject ICriarPokemonService criarPokemon;
+@using Domain.Dto
+@using System.Text;
+@using Domain.Services
+@inject HttpClient Http;
+
+<PageTitle>Editar Pokémon</PageTitle>
+
+<h1>Editar Pokémon</h1>
+
+
+<EditForm Model="@pokemon" OnValidSubmit="@CriarPokemon">
+    <div>
+        <label for="name">Nome do Pokémon</label>
+        <InputText id="nome" @bind-Value="pokemon.Nome" class="form-control"></InputText>
+    </div>
+    <div>
+        <label for="type">Tipo do Pokémon</label>
+        <InputText id="type" @bind-Value="pokemon.Type" class="form-control"></InputText>
+    </div>
+    <div>   
+        <label for="image">Url da Imagem do Pokémon</label>
+        <InputText id="image" @bind-Value="pokemon.Image" class="form-control"></InputText>
+    </div>
+    <div>
+        <label for="generation">Geração do Pokémon</label>
+        <InputText id="generation" @bind-Value="pokemon.Generation" class="form-control"></InputText>
+    </div>
+
+    <div>
+        <label for="description">Geração do Pokémon</label>
+        <InputText id="description" @bind-Value="pokemon.Description" class="form-control"></InputText>
+    </div>
+    <div>
+        <p>@message</p>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Criar Pokemon</button>
+</EditForm >
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    protected CriarPokemonDto? pokemon = new ();
+    protected string message;
+
+    protected async Task CriarPokemon()
+    {
+        try {
+
+            var result = await Http.PostAsJsonAsync("pokemon", pokemon);
+            var pokemonResult = result.Content.ReadFromJsonAsync<Pokemon>();
+
+            if(pokemonResult != null)
+            {
+                message = "Cadastrado com sucesso";        
+            }
+
+            
+        } catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+}
