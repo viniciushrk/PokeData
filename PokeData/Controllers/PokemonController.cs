@@ -15,17 +15,20 @@ namespace PokeData.Controllers
         private readonly SocketService _socketService;
         private readonly CacheService _cacheService;
         private readonly BuscarListaPokemonRepository _buscarListaPokemonRepository;
+        private readonly BuscaPokemonRepository _buscaPokemon;
         public PokemonController(
             PokemonContext pokemonContext,
             SocketService socketService,
             CacheService cacheService,
-            BuscarListaPokemonRepository buscarListaPokemonRepository
+            BuscarListaPokemonRepository buscarListaPokemonRepository,
+            BuscaPokemonRepository buscaPokemon
         )
         {
             _pokemonContext = pokemonContext;
             _socketService = socketService;
             _cacheService = cacheService;
             _buscarListaPokemonRepository = buscarListaPokemonRepository;
+            _buscaPokemon = buscaPokemon;
         }
 
         [HttpGet]
@@ -45,7 +48,7 @@ namespace PokeData.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            var pokemon = _pokemonContext.Pokemon.Find(id);
+            var pokemon = _buscaPokemon.Executar(id);
             
             if (pokemon == null)
                 return NotFound();
@@ -69,66 +72,68 @@ namespace PokeData.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync(Guid id, [FromBody] Pokemon pokemon)
-        {
+        public async Task<IActionResult> PutAsync(
+            Guid id,
+            [FromBody] Pokemon pokemon,
+            [FromServices] EditarPokemonRepository editarPokemon
+        ) {
             if (id != pokemon.Id)
                 return BadRequest();
-            
-            _pokemonContext.Pokemon.Update(pokemon);
-            _pokemonContext.SaveChanges();
 
+            editarPokemon.Executar(pokemon);
             await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
 
         [HttpPost("IncrementStars/{id}")]
-        public IActionResult IncrementStars(
-            Guid id
+        public async Task<IActionResult> IncrementStarsAsync(
+            Guid id,
+            [FromServices] IncrementarStarsPokemonRepository incrementarStarsPokemon
         ) {
             var pokemonSearch = _pokemonContext.Pokemon.Find(id);
             
             if (pokemonSearch == null)
                 return BadRequest();
 
-            pokemonSearch.IncrementStars();
+            var pokemonIncrementado = incrementarStarsPokemon.Executar(pokemonSearch);
 
-            _pokemonContext.Pokemon.Update(pokemonSearch);
-            _pokemonContext.SaveChanges();
+            _socketService.EmitirEventoStarsIncrement(pokemon: pokemonIncrementado);
 
-            _socketService.EmitirEventoStarsIncrement(pokemon: pokemonSearch);
-            
+            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
 
         [HttpPost("DecrementStars/{id}")]
-        public IActionResult DecrementStars(Guid id)
-        {
+        public async Task<IActionResult> DecrementStarsAsync(
+            Guid id,
+            [FromServices] DecrementarStarsPokemonRepository decrementarStarsPokemon
+        ) {
             var pokemonSearch = _pokemonContext.Pokemon.Find(id);
 
             if (pokemonSearch == null)
                 return BadRequest();
-            
-            if(pokemonSearch.Stars != 0)
-            {
-                pokemonSearch.DecrementStars();
-                _pokemonContext.Pokemon.Update(pokemonSearch);
-                _pokemonContext.SaveChanges();
 
-                _socketService.EmitirEventoStarsDecrement(pokemon: pokemonSearch);
-            }
+            var pokemonDecrementado = decrementarStarsPokemon.Executar(pokemonSearch);
 
+            _socketService.EmitirEventoStarsDecrement(pokemon: pokemonDecrementado);
+            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
 
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
-        {
-            var evento = _pokemonContext.Pokemon.Find(id);
-            if (evento == null)
+        public async Task<IActionResult> DeleteAsync(
+            Guid id,
+            [FromServices] DeletarPokemonRepository deletarPokemon
+        ){
+
+            var pokemon = _buscaPokemon.Executar(id);
+
+            if (pokemon == null)
                 return NotFound();
-            _pokemonContext.Pokemon.Remove(evento);
-            _pokemonContext.SaveChanges();
+
+            deletarPokemon.Executar(pokemon);
+            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
     }

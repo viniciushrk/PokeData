@@ -1,4 +1,5 @@
 using Domain.Data;
+using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Infra.Services;
 
@@ -14,6 +15,15 @@ builder.Services.AddStackExchangeRedisCache(
         options.Configuration = "localhost:6379"; 
     });
 // Add services to the container.
+
+builder.Services.AddScoped<BuscaPokemonRepository>();
+builder.Services.AddScoped<BuscarListaPokemonRepository>();
+builder.Services.AddScoped<CadastrarPokemonRepository>();
+builder.Services.AddScoped<DecrementarStarsPokemonRepository>();
+builder.Services.AddScoped<DeletarPokemonRepository>();
+builder.Services.AddScoped<DecrementarStarsPokemonRepository>();
+builder.Services.AddScoped<EditarPokemonRepository>();
+builder.Services.AddScoped<IncrementarStarsPokemonRepository>();
 
 builder.Services.AddScoped<SocketService>();
 builder.Services.AddScoped<CacheService>();

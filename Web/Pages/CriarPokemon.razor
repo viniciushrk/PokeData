@@ -2,7 +2,6 @@
 @*@page "/pokemon/{id:Guid}"*@
 @using Domain.Dto
 @using System.Text;
-@using Domain.Services
 @inject HttpClient Http;
 
 <PageTitle>Adicionar Pokémon</PageTitle>
@@ -29,7 +28,7 @@
     </div>
 
     <div>
-        <label for="description">Geração do Pokémon</label>
+        <label for="description">Descrição</label>
         <InputText id="description" @bind-Value="pokemon.Description" class="form-control"></InputText>
     </div>
     <div>
