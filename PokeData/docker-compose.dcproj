@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>dd722a4d-e58c-4b63-abe1-c82e4a025090</ProjectGuid>
+    <ProjectGuid>373a2efd-9c55-40c6-a21e-abf3ee25ec9e</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>pokedata</DockerServiceName>

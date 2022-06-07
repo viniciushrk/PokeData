@@ -23,54 +23,29 @@ services:
     networks:
       - app
 
-  # socket:
-  #   container_name: "socket-poke-data"
-  #   # hostname: dbpokemon
-  #   build:
-  #     context: "socket-app-socket"
-  #     dockerfile: Dockerfile
-  #   env_file:
-  #     - './socket-app-socket/.env'
-  #   # command: 'npm install'
-  #   volumes:
-  #       - "./socket-app-socket:/usr/src/app"
-  #   ports:
-  #     - 3000:3000
-  #   links:
-  #     - "cache"
-  #   depends_on:
-  #     - cache
-  #   networks:
-  #     - app
-
-  # pokedata:
-  #   image: ${DOCKER_REGISTRY-}pokedata
-  #   build:
-  #     context: "."
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_URLS=https://+:443;http://+:80
-  #   ports:
-  #     - 5000:80
-  #     - 5001:443 
-  #   links:
-  #     - "cache"
-  #     - "db"
-  #   depends_on:
-  #     - cache
-  #     - db
-  #   networks:
-  #     - app
-  #   volumes:
-  #     - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-  #     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-    
-
+  socket:
+    container_name: "socket-poke-data"
+    # hostname: dbpokemon
+    build:
+      context: "socket-app-socket"
+      dockerfile: Dockerfile
+    env_file:
+      - './socket-app-socket/.env'
+    # command: 'npm install'
+    volumes:
+        - "./socket-app-socket:/usr/src/app"
+    ports:
+      - 3000:3000
+    links:
+      - "cache"
+    depends_on:
+      - cache
+    networks:
+      - app
+      
 networks:
   app:
     driver: bridge
-    # external: true
 
 volumes:
   dbapp:

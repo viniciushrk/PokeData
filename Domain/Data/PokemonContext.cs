@@ -8,7 +8,6 @@ public class PokemonContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        //builder.UseSerialColumns();
         base.OnModelCreating(builder);
     }
     public DbSet<Pokemon> Pokemon { get; set; }

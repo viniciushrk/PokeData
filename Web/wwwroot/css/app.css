@@ -62,3 +62,32 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+.btn-star {
+    font-size: 16px;
+    background: none;
+    color: #fcba03;
+    padding:0px;
+}
+
+.btn-star .bi{
+    font-size: 21px;
+    margin-right:5px;
+}
+
+    .btn-star:hover {
+        color: #f0b102;
+    }
+
+.star-counter {
+    margin-left: 5px;
+    background: #fcba03;
+    color: #fff;
+}
+
+footer {
+    margin-top: 15px;
+    color:#fff;
+    background: url("/images/wp7808611.png");
+}
