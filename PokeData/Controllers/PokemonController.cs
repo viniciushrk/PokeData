@@ -34,14 +34,8 @@ namespace PokeData.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var pokemons = await _cacheService.GetCacheListaPokemon();
-
-            if(pokemons != null)
-                return Ok(pokemons);    
-
             var pokemonDb = _buscarListaPokemonRepository.Executar();
 
-            await _cacheService.EmitirCachePokemon();
             return Ok(pokemonDb);
         }
 
@@ -66,7 +60,6 @@ namespace PokeData.Controllers
 
             var pokemonCriado = cadastrarPokemonRepository.Executar(pokemon); 
 
-            await _cacheService.EmitirCachePokemon();
             return Created($"eventos/{pokemonCriado.Id}", pokemon);
         }
 
@@ -81,7 +74,6 @@ namespace PokeData.Controllers
                 return BadRequest();
 
             editarPokemon.Executar(pokemon);
-            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
 
@@ -97,9 +89,6 @@ namespace PokeData.Controllers
 
             var pokemonIncrementado = incrementarStarsPokemon.Executar(pokemonSearch);
 
-            _socketService.EmitirEventoStarsIncrement(pokemon: pokemonIncrementado);
-
-            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
 
@@ -115,8 +104,6 @@ namespace PokeData.Controllers
 
             var pokemonDecrementado = decrementarStarsPokemon.Executar(pokemonSearch);
 
-            _socketService.EmitirEventoStarsDecrement(pokemon: pokemonDecrementado);
-            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
 
@@ -133,7 +120,6 @@ namespace PokeData.Controllers
                 return NotFound();
 
             deletarPokemon.Executar(pokemon);
-            await _cacheService.EmitirCachePokemon();
             return NoContent();
         }
     }
